@@ -23,7 +23,7 @@ class SecondActivity : AppCompatActivity() {
         ingredients.add(Ingredient("mleko","200 ml"))
         ingredients.add(Ingredient("jajko","sztuka"))
 
-        ingredientAdapter = IngredientAdapter(ingredients, R.layout.item_ingredient,)
+        ingredientAdapter = IngredientAdapter(ingredients)
         rvIngredients.adapter = ingredientAdapter
         rvIngredients.layoutManager = LinearLayoutManager(this)
 
