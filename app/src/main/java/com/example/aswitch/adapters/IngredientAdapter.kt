@@ -1,9 +1,11 @@
-package com.example.aswitch
+package com.example.aswitch.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.aswitch.Ingredient
+import com.example.aswitch.R
 import kotlinx.android.synthetic.main.item_ingredient.view.*
 
 class IngredientAdapter (

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.aswitch.adapters.IngredientAdapter
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.activity_second.*
 
