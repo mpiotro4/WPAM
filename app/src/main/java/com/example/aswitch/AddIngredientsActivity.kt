@@ -2,15 +2,14 @@ package com.example.aswitch
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aswitch.adapters.AddIngredientAdapter
-import com.example.aswitch.adapters.IngredientAdapter
+import com.example.aswitch.dialogs.QuantityDialog
 import kotlinx.android.synthetic.main.activity_add_ingredients.*
+import kotlinx.android.synthetic.main.activity_add_ingredients.rvIngredients
 
-class AddIngredientsActivity : AppCompatActivity() {
+class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialogListener {
 
     private lateinit var adapter: AddIngredientAdapter
 
@@ -23,35 +22,8 @@ class AddIngredientsActivity : AppCompatActivity() {
         ingredients.add(Ingredient("Szynka",""))
         ingredients.add(Ingredient("mleko",""))
         ingredients.add(Ingredient("jajko",""))
-        ingredients.add(Ingredient("Szynka",""))
-        ingredients.add(Ingredient("mleko",""))
-        ingredients.add(Ingredient("jajko",""))
-        ingredients.add(Ingredient("Szynka",""))
-        ingredients.add(Ingredient("mleko",""))
-        ingredients.add(Ingredient("jajko",""))
-        ingredients.add(Ingredient("Szynka",""))
-        ingredients.add(Ingredient("mleko",""))
-        ingredients.add(Ingredient("jajko",""))
-        ingredients.add(Ingredient("Szynka",""))
-        ingredients.add(Ingredient("mleko",""))
-        ingredients.add(Ingredient("jajko",""))
-        ingredients.add(Ingredient("Szynka",""))
-        ingredients.add(Ingredient("mleko",""))
-        ingredients.add(Ingredient("jajko",""))
-        ingredients.add(Ingredient("Szynka",""))
-        ingredients.add(Ingredient("mleko",""))
-        ingredients.add(Ingredient("jajko",""))
-        ingredients.add(Ingredient("Szynka",""))
-        ingredients.add(Ingredient("mleko",""))
-        ingredients.add(Ingredient("jajko",""))
-        ingredients.add(Ingredient("Szynka",""))
-        ingredients.add(Ingredient("mleko",""))
-        ingredients.add(Ingredient("jajko",""))
-        ingredients.add(Ingredient("Szynka",""))
-        ingredients.add(Ingredient("mleko",""))
-        ingredients.add(Ingredient("jajko",""))
 
-        adapter = AddIngredientAdapter(ingredients)
+        adapter = AddIngredientAdapter(ingredients, this::openQuantityDialog)
         rvIngredients.adapter = adapter
         rvIngredients.layoutManager = LinearLayoutManager(this)
 
@@ -80,5 +52,14 @@ class AddIngredientsActivity : AppCompatActivity() {
             }
         }
         return filteredList
+    }
+
+    private fun openQuantityDialog(title: String) {
+        val dialog = QuantityDialog(title)
+        dialog.show(supportFragmentManager, "example dialog")
+    }
+
+    override fun applyTexts(username: String?, password: String?) {
+
     }
 }

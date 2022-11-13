@@ -4,14 +4,17 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aswitch.adapters.IngredientAdapter
+import com.example.aswitch.dialogs.QuantityDialog
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.activity_second.*
+import kotlinx.android.synthetic.main.activity_second.btnAdd
+import kotlinx.android.synthetic.main.item_ingredient_add.*
 
 class SecondActivity : AppCompatActivity() {
-
     private lateinit var ingredientAdapter: IngredientAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,20 +37,6 @@ class SecondActivity : AppCompatActivity() {
         addChip("chuj")
         addChip("pizda")
         addChip("jeża")
-        addChip("ja")
-        addChip("jebie")
-        addChip("nie")
-        addChip("chce")
-        addChip("XD")
-        addChip("dsadsadsad")
-        addChip("wesadsadge")
-        addChip("csadsadhuj")
-        addChip("pidsasadzda")
-        addChip("jesadża")
-        addChip("jasad")
-        addChip("jsadebie")
-        addChip("nsadie")
-        addChip("csadhce")
 
         btnBack.setOnClickListener {
             finish()
