@@ -1,23 +1,31 @@
-package com.example.aswitch
+package com.example.aswitch.activities
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.SearchView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.aswitch.Ingredient
+import com.example.aswitch.R
 import com.example.aswitch.adapters.AddIngredientAdapter
 import com.example.aswitch.dialogs.QuantityDialog
 import kotlinx.android.synthetic.main.activity_add_ingredients.*
-import kotlinx.android.synthetic.main.activity_add_ingredients.rvIngredients
+
 
 class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialogListener {
 
     private lateinit var adapter: AddIngredientAdapter
+    private lateinit var extraIngredients: MutableList<Ingredient>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_ingredients)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        extraIngredients = intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients") as ArrayList<Ingredient>
+
+        // Todo fetch from db
         val ingredients = mutableListOf<Ingredient>()
         ingredients.add(Ingredient("Szynka",""))
         ingredients.add(Ingredient("mleko",""))
@@ -61,5 +69,14 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
 
     override fun applyTexts(username: String?, password: String?) {
 
+    }
+
+    override fun changeActivity(quantity: String, title: String) {
+        Log.d("myTag", "This is my message $quantity $title")
+        extraIngredients.add(Ingredient(title,quantity))
+        Intent(this, SecondActivity::class.java).also {
+            it.putExtra("extra_ingredients", ArrayList(extraIngredients))
+            startActivity(it)
+        }
     }
 }

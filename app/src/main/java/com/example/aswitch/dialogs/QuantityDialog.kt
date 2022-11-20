@@ -18,14 +18,12 @@ class QuantityDialog (
         val view: View = inflater.inflate(R.layout.layout_quantity_dialog, null)
 
         val etQuantity = view.findViewById<EditText>(R.id.etQuantity)
-
         return AlertDialog.Builder(requireActivity())
             .setView(view)
             .setTitle(title)
             .setNegativeButton("Anuluj") {_, _, ->}
             .setPositiveButton("Ok") {_, _, ->
-                val quantity = etQuantity.text.toString()
-//                listener!!.applyTexts(username, password)
+                listener!!.changeActivity(etQuantity.text.toString(), title)
             }
             .create()
     }
@@ -44,5 +42,6 @@ class QuantityDialog (
 
     interface ExampleDialogListener {
         fun applyTexts(username: String?, password: String?)
+        fun changeActivity(quantity: String, title: String)
     }
 }

@@ -12,7 +12,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".SecondActivity">
+    tools:context=".activities.SecondActivity">
     <TextView
         android:id="@+id/tvKeyWords"
         android:layout_width="wrap_content"
