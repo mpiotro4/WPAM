@@ -13,6 +13,14 @@
         android:theme="@style/Theme.Switch"
         tools:targetApi="31">
         <activity
+            android:name=".activities.AddKeyWordsActivity"
+            android:parentActivityName=".activities.SecondActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".activities.AddIngredientsActivity"
             android:parentActivityName=".activities.SecondActivity"
             android:exported="false">

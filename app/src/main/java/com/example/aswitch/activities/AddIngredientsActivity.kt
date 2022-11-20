@@ -17,6 +17,7 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
 
     private lateinit var adapter: AddIngredientAdapter
     private lateinit var extraIngredients: MutableList<Ingredient>
+    private lateinit var extraKeyWords: MutableList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +25,7 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         extraIngredients = intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients") as ArrayList<Ingredient>
+        extraKeyWords = intent.getStringArrayListExtra("extra_keyWords") as ArrayList<String>
 
         // Todo fetch from db
         val ingredients = mutableListOf<Ingredient>()
@@ -76,6 +78,7 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
         extraIngredients.add(Ingredient(title,quantity))
         Intent(this, SecondActivity::class.java).also {
             it.putExtra("extra_ingredients", ArrayList(extraIngredients))
+            it.putExtra("extra_key_words", ArrayList(extraKeyWords))
             startActivity(it)
         }
     }

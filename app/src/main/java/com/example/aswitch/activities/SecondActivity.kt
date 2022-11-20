@@ -14,6 +14,8 @@ import kotlinx.android.synthetic.main.activity_second.*
 
 class SecondActivity : AppCompatActivity() {
     private lateinit var ingredientAdapter: IngredientAdapter
+    private lateinit var keyWords: ArrayList<String>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,19 +24,25 @@ class SecondActivity : AppCompatActivity() {
 
         var ingredients = mutableListOf<Ingredient>()
         intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients")?.let {
-            ingredients = intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients") as ArrayList<Ingredient>
+            ingredients =
+                intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients") as ArrayList<Ingredient>
         }
+
+//        intent.getStringArrayExtra("extra_key_words").toString()
+        keyWords = arrayListOf()
+        intent.getStringArrayListExtra("extra_key_words")?.let {
+            keyWords = it
+            keyWords.forEach {addChip(it) }
+        }
+//        Log.d("myTag", intent.getStringArrayListExtra("extra_key_words").toString())
+//        intent.getParcelableArrayListExtra<String>("extra_key_words")?.let {
+//            keyWords = intent.getParcelableArrayListExtra<String>("extra_key_words") as ArrayList<String>
+//            keyWords.forEach{ addChip(it.toString()) }
+//        }
 
         ingredientAdapter = IngredientAdapter(ingredients)
         rvIngredients.adapter = ingredientAdapter
         rvIngredients.layoutManager = LinearLayoutManager(this)
-
-        addChip("XD")
-        addChip("dupa")
-        addChip("wege")
-        addChip("chuj")
-        addChip("pizda")
-        addChip("jeża")
 
         btnBack.setOnClickListener {
             finish()
@@ -43,6 +51,15 @@ class SecondActivity : AppCompatActivity() {
         etAddIngredients.setOnClickListener {
             Intent(this, AddIngredientsActivity::class.java).also {
                 it.putExtra("extra_ingredients", ArrayList(ingredients))
+                it.putExtra("extra_keyWords", keyWords)
+                startActivity(it)
+            }
+        }
+
+        etAddKeyWords.setOnClickListener {
+            Intent(this, AddKeyWordsActivity::class.java).also {
+                it.putExtra("extra_ingredients", ArrayList(ingredients))
+                it.putExtra("extra_keyWords", keyWords)
                 startActivity(it)
             }
         }
@@ -63,7 +80,12 @@ class SecondActivity : AppCompatActivity() {
             cgKeyWords.addView(chip as View)
             setOnCloseIconClickListener {
                 cgKeyWords.removeView(chip as View)
+                removeChip(txt.toString())
             }
         }
+    }
+
+    private fun removeChip(txt: String) {
+        keyWords.remove(txt)
     }
 }
