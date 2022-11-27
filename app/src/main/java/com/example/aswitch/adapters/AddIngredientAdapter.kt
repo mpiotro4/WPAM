@@ -1,6 +1,5 @@
 package com.example.aswitch.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +15,8 @@ class AddIngredientAdapter(
 ) : RecyclerView.Adapter<AddIngredientAdapter.IngredientViewHolder>() {
     class IngredientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddIngredientAdapter.IngredientViewHolder {
-        return AddIngredientAdapter.IngredientViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientViewHolder {
+        return IngredientViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.item_ingredient_add,
                 parent,
@@ -26,7 +25,7 @@ class AddIngredientAdapter(
         )
     }
 
-    override fun onBindViewHolder(holder: AddIngredientAdapter.IngredientViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: IngredientViewHolder, position: Int) {
         val curTodo = ingredients[position]
         holder.itemView.apply {
             tvIngredient.text = curTodo.title

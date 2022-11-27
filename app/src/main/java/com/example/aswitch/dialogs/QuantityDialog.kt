@@ -24,6 +24,7 @@ class QuantityDialog (
             .setNegativeButton("Anuluj") {_, _, ->}
             .setPositiveButton("Ok") {_, _, ->
                 listener!!.changeActivity(etQuantity.text.toString(), title)
+                listener!!.addIngredientToDB(title)
             }
             .create()
     }
@@ -43,5 +44,6 @@ class QuantityDialog (
     interface ExampleDialogListener {
         fun applyTexts(username: String?, password: String?)
         fun changeActivity(quantity: String, title: String)
+        fun addIngredientToDB(title: String)
     }
 }

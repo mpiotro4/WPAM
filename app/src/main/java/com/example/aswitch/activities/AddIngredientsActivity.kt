@@ -10,6 +10,7 @@ import com.example.aswitch.Ingredient
 import com.example.aswitch.R
 import com.example.aswitch.adapters.AddIngredientAdapter
 import com.example.aswitch.dialogs.QuantityDialog
+import com.release.gfg1.DBHelper
 import kotlinx.android.synthetic.main.activity_add_ingredients.*
 
 
@@ -22,16 +23,13 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_ingredients)
+//        Todo: make this button don't clean second activity
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         extraIngredients = intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients") as ArrayList<Ingredient>
         extraKeyWords = intent.getStringArrayListExtra("extra_keyWords") as ArrayList<String>
 
-        // Todo fetch from db
-        val ingredients = mutableListOf<Ingredient>()
-        ingredients.add(Ingredient("Szynka",""))
-        ingredients.add(Ingredient("mleko",""))
-        ingredients.add(Ingredient("jajko",""))
+        val ingredients = fetchIngredientsFromDB()
 
         adapter = AddIngredientAdapter(ingredients, this::openQuantityDialog)
         rvIngredients.adapter = adapter
@@ -49,6 +47,29 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
                 return true
             }
         })
+    }
+
+    private fun fetchIngredientsFromDB(): MutableList<Ingredient> {
+        val ingredients = mutableListOf<Ingredient>()
+        val db = DBHelper(this, null)
+        val cursor = db.getTitle()
+        cursor!!.moveToFirst()
+        while (cursor.moveToNext()) {
+            ingredients.add(
+                Ingredient(
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.TITLE_COL)),
+                    ""
+                )
+            )
+        }
+        cursor.moveToLast()
+        ingredients.add(
+            Ingredient(
+                cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.TITLE_COL)),
+                ""
+            )
+        )
+        return ingredients
     }
 
     private fun getFilteredList(text: String, ingredients: MutableList<Ingredient>): MutableList<Ingredient> {
@@ -81,5 +102,10 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
             it.putExtra("extra_key_words", ArrayList(extraKeyWords))
             startActivity(it)
         }
+    }
+
+    override fun addIngredientToDB(title: String) {
+        val dbHelper = DBHelper(this, null)
+        dbHelper.addIngredient(title)
     }
 }
