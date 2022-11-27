@@ -57,7 +57,7 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
         while (cursor.moveToNext()) {
             ingredients.add(
                 Ingredient(
-                    cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.TITLE_COL)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.INGREDIENTS_TITLE_COL)),
                     ""
                 )
             )
@@ -65,7 +65,7 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
         cursor.moveToLast()
         ingredients.add(
             Ingredient(
-                cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.TITLE_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.INGREDIENTS_TITLE_COL)),
                 ""
             )
         )

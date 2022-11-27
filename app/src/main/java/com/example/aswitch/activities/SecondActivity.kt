@@ -27,18 +27,11 @@ class SecondActivity : AppCompatActivity() {
             ingredients =
                 intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients") as ArrayList<Ingredient>
         }
-
-//        intent.getStringArrayExtra("extra_key_words").toString()
         keyWords = arrayListOf()
         intent.getStringArrayListExtra("extra_key_words")?.let {
             keyWords = it
-            keyWords.forEach {addChip(it) }
+            keyWords.forEach { addChip(it) }
         }
-//        Log.d("myTag", intent.getStringArrayListExtra("extra_key_words").toString())
-//        intent.getParcelableArrayListExtra<String>("extra_key_words")?.let {
-//            keyWords = intent.getParcelableArrayListExtra<String>("extra_key_words") as ArrayList<String>
-//            keyWords.forEach{ addChip(it.toString()) }
-//        }
 
         ingredientAdapter = IngredientAdapter(ingredients)
         rvIngredients.adapter = ingredientAdapter
@@ -63,6 +56,7 @@ class SecondActivity : AppCompatActivity() {
                 startActivity(it)
             }
         }
+
     }
 
     private fun addChip(txt: String) {
@@ -80,7 +74,7 @@ class SecondActivity : AppCompatActivity() {
             cgKeyWords.addView(chip as View)
             setOnCloseIconClickListener {
                 cgKeyWords.removeView(chip as View)
-                removeChip(txt.toString())
+                removeChip(txt)
             }
         }
     }
