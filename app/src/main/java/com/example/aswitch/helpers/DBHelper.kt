@@ -30,7 +30,20 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 $RECIPES_COST_COL REAL
                 )
             """)
+        db.execSQL(""" 
+            CREATE TABLE $RECIPE_INGREDIENTS_TABLE_NAME (
+                $RECIPES_ID_COL INTEGER,
+                $INGREDIENTS_ID_COL INTEGER,
+                FOREIGN KEY($RECIPES_ID_COL) REFERENCES $RECIPES_TABLE_NAME($RECIPES_ID_COL),
+                FOREIGN KEY($INGREDIENTS_ID_COL) REFERENCES $INGREDIENTS_TABLE_NAME($INGREDIENTS_ID_COL),
+                PRIMARY KEY ($RECIPES_ID_COL, $INGREDIENTS_ID_COL)    
+                )
+            """)
         seed(db)
+    }
+
+    override fun onConfigure(db: SQLiteDatabase) {
+        db.setForeignKeyConstraintsEnabled(true)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
@@ -68,7 +81,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     companion object{
         private const val DATABASE_NAME = "cookbook"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 3
 
         const val INGREDIENTS_TABLE_NAME = "ingredients"
         const val INGREDIENTS_ID_COL = "ingredient_id"
@@ -83,6 +96,8 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         const val RECIPES_TITLE_COL = "title"
         const val RECIPES_TIME_COL = "time"
         const val RECIPES_COST_COL = "cost"
+
+        const val RECIPE_INGREDIENTS_TABLE_NAME = "recipe_ingredients"
     }
 
     private fun seed(db: SQLiteDatabase) {
