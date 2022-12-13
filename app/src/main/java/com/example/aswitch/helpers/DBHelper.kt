@@ -22,12 +22,30 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 $KEYWORDS_KEYWORD_COL TEXT,
                 UNIQUE($KEYWORDS_KEYWORD_COL))
             """)
+        db.execSQL(""" 
+            CREATE TABLE $RECIPES_TABLE_NAME (
+                $RECIPES_ID_COL INTEGER PRIMARY KEY,
+                $RECIPES_TITLE_COL TEXT,
+                $RECIPES_TIME_COL INTEGER,
+                $RECIPES_COST_COL REAL
+                )
+            """)
         seed(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
         db.execSQL("DROP TABLE IF EXISTS $INGREDIENTS_TABLE_NAME")
         onCreate(db)
+    }
+
+    fun addRecipe(title: String, time: String, cost: String){
+        val values = ContentValues()
+        values.put(RECIPES_TITLE_COL, title)
+        values.put(RECIPES_COST_COL, cost)
+        values.put(RECIPES_TIME_COL, time)
+        val db = this.writableDatabase
+        db.insert(RECIPES_TABLE_NAME, null, values)
+        db.close()
     }
 
     fun addIngredient(title : String){
@@ -50,7 +68,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     companion object{
         private const val DATABASE_NAME = "cookbook"
-        private const val DATABASE_VERSION = 7
+        private const val DATABASE_VERSION = 1
 
         const val INGREDIENTS_TABLE_NAME = "ingredients"
         const val INGREDIENTS_ID_COL = "ingredient_id"
@@ -59,6 +77,12 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         const val KEYWORDS_TABLE_NAME = "keywords"
         const val KEYWORDS_ID_COL = "keyword_id"
         const val KEYWORDS_KEYWORD_COL = "keyword"
+
+        const val RECIPES_TABLE_NAME = "recipes"
+        const val RECIPES_ID_COL = "recipe_id"
+        const val RECIPES_TITLE_COL = "title"
+        const val RECIPES_TIME_COL = "time"
+        const val RECIPES_COST_COL = "cost"
     }
 
     private fun seed(db: SQLiteDatabase) {

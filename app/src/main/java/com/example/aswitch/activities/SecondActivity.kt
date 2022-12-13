@@ -10,6 +10,7 @@ import com.example.aswitch.Ingredient
 import com.example.aswitch.R
 import com.example.aswitch.adapters.IngredientAdapter
 import com.google.android.material.chip.Chip
+import com.release.gfg1.DBHelper
 import kotlinx.android.synthetic.main.activity_second.*
 
 class SecondActivity : AppCompatActivity() {
@@ -22,6 +23,7 @@ class SecondActivity : AppCompatActivity() {
         setContentView(R.layout.activity_second)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val dbHelper = DBHelper(this, null)
         var ingredients = mutableListOf<Ingredient>()
         intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients")?.let {
             ingredients =
@@ -57,6 +59,9 @@ class SecondActivity : AppCompatActivity() {
             }
         }
 
+        btnAdd.setOnClickListener {
+            dbHelper.addRecipe(etRecipeName.text.toString(), etCost.text.toString(), etTime.text.toString())
+        }
     }
 
     private fun addChip(txt: String) {
