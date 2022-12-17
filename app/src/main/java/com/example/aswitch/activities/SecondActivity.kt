@@ -16,24 +16,19 @@ import kotlinx.android.synthetic.main.activity_second.*
 class SecondActivity : AppCompatActivity() {
     private lateinit var ingredientAdapter: IngredientAdapter
     private lateinit var keyWords: ArrayList<String>
-
+    private lateinit var ingredients: MutableList<Ingredient>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        keyWords = arrayListOf()
+        ingredients = mutableListOf()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val dbHelper = DBHelper(this, null)
-        var ingredients = mutableListOf<Ingredient>()
-        intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients")?.let {
-            ingredients =
-                intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients") as ArrayList<Ingredient>
-        }
-        keyWords = arrayListOf()
-        intent.getStringArrayListExtra("extra_key_words")?.let {
-            keyWords = it
-            keyWords.forEach { addChip(it) }
-        }
+
+        populateLists()
 
         ingredientAdapter = IngredientAdapter(ingredients)
         rvIngredients.adapter = ingredientAdapter
@@ -60,7 +55,13 @@ class SecondActivity : AppCompatActivity() {
         }
 
         btnAdd.setOnClickListener {
-            dbHelper.addRecipe(etRecipeName.text.toString(), etCost.text.toString(), etTime.text.toString())
+            dbHelper.addRecipe(
+                etRecipeName.text.toString(),
+                etCost.text.toString(),
+                etTime.text.toString(),
+                keyWords,
+                ingredients
+            )
         }
     }
 
@@ -81,6 +82,17 @@ class SecondActivity : AppCompatActivity() {
                 cgKeyWords.removeView(chip as View)
                 removeChip(txt)
             }
+        }
+    }
+
+    private fun populateLists() {
+        intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients")?.let {
+            ingredients =
+                intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients") as ArrayList<Ingredient>
+        }
+        intent.getStringArrayListExtra("extra_key_words")?.let {
+            keyWords = it
+            keyWords.forEach { addChip(it) }
         }
     }
 

@@ -5,6 +5,8 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
+import com.example.aswitch.Ingredient
 
 class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
@@ -22,6 +24,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 $KEYWORDS_KEYWORD_COL TEXT,
                 UNIQUE($KEYWORDS_KEYWORD_COL))
             """)
+//        Todo: make cols not null
         db.execSQL(""" 
             CREATE TABLE $RECIPES_TABLE_NAME (
                 $RECIPES_ID_COL INTEGER PRIMARY KEY,
@@ -30,6 +33,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 $RECIPES_COST_COL REAL
                 )
             """)
+//        Todo: add quantity
         db.execSQL(""" 
             CREATE TABLE $RECIPE_INGREDIENTS_TABLE_NAME (
                 $RECIPES_ID_COL INTEGER,
@@ -51,13 +55,23 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         onCreate(db)
     }
 
-    fun addRecipe(title: String, time: String, cost: String){
+    fun addRecipe(title: String, time: String, cost: String, keyWords: ArrayList<String>, ingredients: MutableList<Ingredient>){
         val values = ContentValues()
         values.put(RECIPES_TITLE_COL, title)
         values.put(RECIPES_COST_COL, cost)
         values.put(RECIPES_TIME_COL, time)
         val db = this.writableDatabase
-        db.insert(RECIPES_TABLE_NAME, null, values)
+        val id = db.insert(RECIPES_TABLE_NAME, null, values)
+        keyWords.forEach {
+            Log.d("XD", it)
+            getKeywordId(it)?.let { it1 -> Log.d("XD", it1)}
+        }
+        ingredients.forEach {
+            getIngredientId(it.title)?.let {
+                it1 -> Log.d("XD", it1)
+                addRecipeIngredient(id.toString(), it1, "")
+            }
+        }
         db.close()
     }
 
@@ -67,6 +81,29 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val db = this.writableDatabase
         db.insert(INGREDIENTS_TABLE_NAME, null, values)
         db.close()
+    }
+
+    private fun addRecipeIngredient(recipeId: String, ingredientId: String, quantity: String) {
+        val values = ContentValues()
+        values.put(RECIPES_ID_COL, recipeId)
+        values.put(INGREDIENTS_ID_COL, ingredientId)
+        val db = this.writableDatabase
+        db.insert(RECIPE_INGREDIENTS_TABLE_NAME, null, values)
+        db.close()
+    }
+
+    private fun getIngredientId(title: String): String? {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("""SELECT $INGREDIENTS_ID_COL FROM $INGREDIENTS_TABLE_NAME WHERE $INGREDIENTS_TITLE_COL = "$title" """, null)
+        cursor.moveToFirst()
+        return cursor.getString(cursor.getColumnIndexOrThrow(INGREDIENTS_ID_COL))
+    }
+
+    private fun getKeywordId(keyword: String): String? {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("""SELECT $KEYWORDS_ID_COL FROM $KEYWORDS_TABLE_NAME WHERE $KEYWORDS_KEYWORD_COL = "$keyword" """, null)
+        cursor.moveToFirst()
+        return cursor.getString(cursor.getColumnIndexOrThrow(KEYWORDS_ID_COL))
     }
 
     fun getTitle(): Cursor? {
