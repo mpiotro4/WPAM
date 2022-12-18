@@ -5,7 +5,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 import com.example.aswitch.Ingredient
 
 class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
@@ -42,6 +41,15 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 PRIMARY KEY ($RECIPES_ID_COL, $INGREDIENTS_ID_COL)    
                 )
             """)
+        db.execSQL(""" 
+            CREATE TABLE $RECIPE_KEYWORDS_TABLE_NAME (
+                $RECIPES_ID_COL INTEGER,
+                $KEYWORDS_ID_COL INTEGER,
+                FOREIGN KEY($RECIPES_ID_COL) REFERENCES $RECIPES_TABLE_NAME($RECIPES_ID_COL),
+                FOREIGN KEY($KEYWORDS_ID_COL) REFERENCES $KEYWORDS_TABLE_NAME($KEYWORDS_ID_COL),
+                PRIMARY KEY ($RECIPES_ID_COL, $KEYWORDS_ID_COL)    
+                )
+            """)
         seed(db)
     }
 
@@ -60,9 +68,9 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         values.put(RECIPES_COST_COL, cost)
         values.put(RECIPES_TIME_COL, time)
         val db = this.writableDatabase
-        val id = db.insert(RECIPES_TABLE_NAME, null, values)
-        keyWords.forEach { getKeywordId(it)?.let { it1 -> Log.d("XD", it1)} }
-        ingredients.forEach {  getIngredientId(it.title)?.let { it1 -> addRecipeIngredient(id.toString(), it1, it.quantity) } }
+        val recipeId = db.insert(RECIPES_TABLE_NAME, null, values)
+        keyWords.forEach { getKeywordId(it)?.let { it1 -> addRecipeKeyword(recipeId.toString(), it1) } }
+        ingredients.forEach {  getIngredientId(it.title)?.let { it1 -> addRecipeIngredient(recipeId.toString(), it1, it.quantity) } }
         db.close()
     }
 
@@ -71,6 +79,15 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         values.put(INGREDIENTS_TITLE_COL, title)
         val db = this.writableDatabase
         db.insert(INGREDIENTS_TABLE_NAME, null, values)
+        db.close()
+    }
+
+    private fun addRecipeKeyword(recipeId: String, keywordId: String) {
+        val values = ContentValues()
+        values.put(RECIPES_ID_COL, recipeId)
+        values.put(KEYWORDS_ID_COL, keywordId)
+        val db = this.writableDatabase
+        db.insert(RECIPE_KEYWORDS_TABLE_NAME, null, values)
         db.close()
     }
 
@@ -128,6 +145,8 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         const val RECIPE_INGREDIENTS_TABLE_NAME = "recipe_ingredients"
         const val RECIPE_INGREDIENTS_QUANTITY_COL = "quantity"
+
+        const val RECIPE_KEYWORDS_TABLE_NAME = "recipe_keywords"
     }
 
     private fun seed(db: SQLiteDatabase) {
@@ -149,5 +168,14 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.execSQL("insert into $KEYWORDS_TABLE_NAME ($KEYWORDS_KEYWORD_COL) values ('nie dobry')")
         db.execSQL("insert into $KEYWORDS_TABLE_NAME ($KEYWORDS_KEYWORD_COL) values ('Bez gluetnu')")
         db.execSQL("insert into $KEYWORDS_TABLE_NAME ($KEYWORDS_KEYWORD_COL) values ('Fit')")
+
+        db.execSQL("insert into $RECIPES_TABLE_NAME ($RECIPES_ID_COL, $RECIPES_TITLE_COL, $RECIPES_TIME_COL, $RECIPES_COST_COL) values (1 ,'Chili con carne', '25', '60')")
+        db.execSQL("insert into $RECIPE_INGREDIENTS_TABLE_NAME ($RECIPES_ID_COL, $INGREDIENTS_ID_COL, $RECIPE_INGREDIENTS_QUANTITY_COL) values (1, 1, 'sztuka')")
+        db.execSQL("insert into $RECIPE_INGREDIENTS_TABLE_NAME ($RECIPES_ID_COL, $INGREDIENTS_ID_COL, $RECIPE_INGREDIENTS_QUANTITY_COL) values (1, 2, '100ml')")
+        db.execSQL("insert into $RECIPE_INGREDIENTS_TABLE_NAME ($RECIPES_ID_COL, $INGREDIENTS_ID_COL, $RECIPE_INGREDIENTS_QUANTITY_COL) values (1, 3, '250g')")
+
+        db.execSQL("insert into $RECIPE_KEYWORDS_TABLE_NAME ($RECIPES_ID_COL, $KEYWORDS_ID_COL) values (1, 1)")
+        db.execSQL("insert into $RECIPE_KEYWORDS_TABLE_NAME ($RECIPES_ID_COL, $KEYWORDS_ID_COL) values (1, 2)")
+        db.execSQL("insert into $RECIPE_KEYWORDS_TABLE_NAME ($RECIPES_ID_COL, $KEYWORDS_ID_COL) values (1, 3)")
     }
 }
