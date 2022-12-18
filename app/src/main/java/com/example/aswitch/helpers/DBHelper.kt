@@ -24,11 +24,10 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 $KEYWORDS_KEYWORD_COL TEXT,
                 UNIQUE($KEYWORDS_KEYWORD_COL))
             """)
-//        Todo: make cols not null
         db.execSQL(""" 
             CREATE TABLE $RECIPES_TABLE_NAME (
                 $RECIPES_ID_COL INTEGER PRIMARY KEY,
-                $RECIPES_TITLE_COL TEXT,
+                $RECIPES_TITLE_COL TEXT NOT NULL,
                 $RECIPES_TIME_COL INTEGER,
                 $RECIPES_COST_COL REAL
                 )
@@ -55,7 +54,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         onCreate(db)
     }
 
-    fun addRecipe(title: String, time: String, cost: String, keyWords: ArrayList<String>, ingredients: MutableList<Ingredient>){
+    fun addRecipe(title: String?, time: String, cost: String, keyWords: ArrayList<String>, ingredients: MutableList<Ingredient>){
         val values = ContentValues()
         values.put(RECIPES_TITLE_COL, title)
         values.put(RECIPES_COST_COL, cost)

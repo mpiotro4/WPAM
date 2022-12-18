@@ -56,7 +56,7 @@ class SecondActivity : AppCompatActivity() {
 
         btnAdd.setOnClickListener {
             dbHelper.addRecipe(
-                etRecipeName.text.toString(),
+                etRecipeName.text.toString().ifEmpty{ null },
                 etCost.text.toString(),
                 etTime.text.toString(),
                 keyWords,
