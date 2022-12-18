@@ -33,11 +33,11 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 $RECIPES_COST_COL REAL
                 )
             """)
-//        Todo: add quantity
         db.execSQL(""" 
             CREATE TABLE $RECIPE_INGREDIENTS_TABLE_NAME (
                 $RECIPES_ID_COL INTEGER,
                 $INGREDIENTS_ID_COL INTEGER,
+                $RECIPE_INGREDIENTS_QUANTITY_COL TEXT,
                 FOREIGN KEY($RECIPES_ID_COL) REFERENCES $RECIPES_TABLE_NAME($RECIPES_ID_COL),
                 FOREIGN KEY($INGREDIENTS_ID_COL) REFERENCES $INGREDIENTS_TABLE_NAME($INGREDIENTS_ID_COL),
                 PRIMARY KEY ($RECIPES_ID_COL, $INGREDIENTS_ID_COL)    
@@ -62,16 +62,8 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         values.put(RECIPES_TIME_COL, time)
         val db = this.writableDatabase
         val id = db.insert(RECIPES_TABLE_NAME, null, values)
-        keyWords.forEach {
-            Log.d("XD", it)
-            getKeywordId(it)?.let { it1 -> Log.d("XD", it1)}
-        }
-        ingredients.forEach {
-            getIngredientId(it.title)?.let {
-                it1 -> Log.d("XD", it1)
-                addRecipeIngredient(id.toString(), it1, "")
-            }
-        }
+        keyWords.forEach { getKeywordId(it)?.let { it1 -> Log.d("XD", it1)} }
+        ingredients.forEach {  getIngredientId(it.title)?.let { it1 -> addRecipeIngredient(id.toString(), it1, it.quantity) } }
         db.close()
     }
 
@@ -87,6 +79,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val values = ContentValues()
         values.put(RECIPES_ID_COL, recipeId)
         values.put(INGREDIENTS_ID_COL, ingredientId)
+        values.put(RECIPE_INGREDIENTS_QUANTITY_COL, quantity)
         val db = this.writableDatabase
         db.insert(RECIPE_INGREDIENTS_TABLE_NAME, null, values)
         db.close()
@@ -135,6 +128,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         const val RECIPES_COST_COL = "cost"
 
         const val RECIPE_INGREDIENTS_TABLE_NAME = "recipe_ingredients"
+        const val RECIPE_INGREDIENTS_QUANTITY_COL = "quantity"
     }
 
     private fun seed(db: SQLiteDatabase) {
