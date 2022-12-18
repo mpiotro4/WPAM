@@ -11,8 +11,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        nextButton.setOnClickListener {
+        btnAddRecipe.setOnClickListener {
             val intent = Intent(this, SecondActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnFindRecipe.setOnClickListener {
+            val intent = Intent(this, FindRecipeActivity::class.java)
             startActivity(intent)
         }
     }

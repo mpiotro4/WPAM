@@ -120,6 +120,11 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return db.rawQuery("SELECT * FROM $INGREDIENTS_TABLE_NAME", null)
     }
 
+    fun getRecipes(): Cursor? {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM $RECIPES_TABLE_NAME", null)
+    }
+
     fun getKeyword(): Cursor? {
         val db = this.readableDatabase
         return db.rawQuery("SELECT * FROM $KEYWORDS_TABLE_NAME", null)
