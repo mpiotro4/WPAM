@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aswitch.Ingredient
@@ -55,13 +56,19 @@ class SecondActivity : AppCompatActivity() {
         }
 
         btnAdd.setOnClickListener {
-            dbHelper.addRecipe(
-                etRecipeName.text.toString().ifEmpty{ null },
-                etCost.text.toString(),
-                etTime.text.toString(),
-                keyWords,
-                ingredients
-            )
+            if(etRecipeName.text.toString().isEmpty()){
+                Toast.makeText(applicationContext,"Nazwa przepisu nie może być pusta",Toast.LENGTH_SHORT).show()
+            } else {
+                dbHelper.addRecipe(
+                    etRecipeName.text.toString(),
+                    etCost.text.toString(),
+                    etTime.text.toString(),
+                    keyWords,
+                    ingredients
+                )
+                Toast.makeText(applicationContext,"Przepis dodany pomyślnie",Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)            }
         }
     }
 
