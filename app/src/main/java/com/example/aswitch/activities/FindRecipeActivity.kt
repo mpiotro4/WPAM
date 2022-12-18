@@ -17,7 +17,7 @@ class FindRecipeActivity : AppCompatActivity() {
 
         val recipes = fetchRecipesFromDB()
 
-        adapter = FindRecipeAdapter(recipes)
+        adapter = FindRecipeAdapter(recipes, this)
         rvRecipes.adapter = adapter
         rvRecipes.layoutManager = LinearLayoutManager(this)
     }
@@ -27,18 +27,26 @@ class FindRecipeActivity : AppCompatActivity() {
         val db = DBHelper(this, null)
         val cursor = db.getRecipes()
         cursor!!.moveToFirst()
+        var recipeId = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_ID_COL))
+        var keywords = db.getRecipeKeywords(recipeId)
         recipes.add(
             Recipe(
                 cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TITLE_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_COST_COL))
+                cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_COST_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TIME_COL)),
+                keywords
             )
         )
         while (cursor.moveToNext()) {
+            recipeId = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_ID_COL))
+            keywords = db.getRecipeKeywords(recipeId)
             recipes.add(
                 Recipe(
                     cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TITLE_COL)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_COST_COL))
-                )
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_COST_COL)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TIME_COL)),
+                    keywords
+                    )
             )
         }
         db.close()

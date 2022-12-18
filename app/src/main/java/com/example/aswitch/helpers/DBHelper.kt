@@ -130,6 +130,20 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return db.rawQuery("SELECT * FROM $KEYWORDS_TABLE_NAME", null)
     }
 
+    fun getRecipeKeywords(recipeId: String): List<String> {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("""
+            |SELECT * FROM $RECIPE_KEYWORDS_TABLE_NAME
+             JOIN $KEYWORDS_TABLE_NAME USING ($KEYWORDS_ID_COL)
+            |WHERE $RECIPES_ID_COL = $recipeId 
+        """.trimMargin(), null)
+        val keywords = mutableListOf<String>()
+        while (cursor.moveToNext()) {
+            keywords.add(cursor.getString(cursor.getColumnIndexOrThrow(KEYWORDS_KEYWORD_COL)))
+        }
+        return keywords
+    }
+
     companion object{
         private const val DATABASE_NAME = "cookbook"
         private const val DATABASE_VERSION = 3
