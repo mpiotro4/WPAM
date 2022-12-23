@@ -1,4 +1,5 @@
 package com.example.aswitch.activities
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +32,7 @@ class FindRecipeActivity : AppCompatActivity() {
         var keywords = db.getRecipeKeywords(recipeId)
         recipes.add(
             Recipe(
+                cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_ID_COL)),
                 cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TITLE_COL)),
                 cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_COST_COL)),
                 cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TIME_COL)),
@@ -42,6 +44,7 @@ class FindRecipeActivity : AppCompatActivity() {
             keywords = db.getRecipeKeywords(recipeId)
             recipes.add(
                 Recipe(
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_ID_COL)),
                     cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TITLE_COL)),
                     cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_COST_COL)),
                     cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TIME_COL)),
@@ -51,5 +54,10 @@ class FindRecipeActivity : AppCompatActivity() {
         }
         db.close()
         return recipes
+    }
+
+    public fun startReadActivity(){
+        val intent = Intent(this, ReadRecipeActivity::class.java)
+        startActivity(intent)
     }
 }
