@@ -8,6 +8,7 @@ import com.example.aswitch.Recipe
 import com.example.aswitch.adapters.FindRecipeAdapter
 import com.release.gfg1.DBHelper
 import kotlinx.android.synthetic.main.activity_find_recipe.*
+import java.io.Serializable
 
 class FindRecipeActivity : AppCompatActivity() {
     private lateinit var adapter: FindRecipeAdapter
@@ -56,8 +57,10 @@ class FindRecipeActivity : AppCompatActivity() {
         return recipes
     }
 
-    public fun startReadActivity(){
-        val intent = Intent(this, ReadRecipeActivity::class.java)
-        startActivity(intent)
+    fun startReadActivity(curRecipe: Recipe) {
+        Intent(this, ReadRecipeActivity::class.java).also {
+            it.putExtra("extra_recipe", curRecipe as Serializable)
+            startActivity(it)
+        }
     }
 }

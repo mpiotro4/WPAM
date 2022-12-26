@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.aswitch.Ingredient
+import com.example.aswitch.Recipe
 
 class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
@@ -144,7 +145,24 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return keywords
     }
 
-    companion object{
+    fun getRecipeIngrediens(recipeId: String): List<Ingredient> {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("""
+            |SELECT * FROM $RECIPE_INGREDIENTS_TABLE_NAME
+             JOIN $INGREDIENTS_TABLE_NAME USING ($INGREDIENTS_ID_COL)
+            |WHERE $RECIPES_ID_COL = $recipeId 
+        """.trimMargin(), null)
+        val ingredients = mutableListOf<Ingredient>()
+        while (cursor.moveToNext()) {
+            ingredients.add(Ingredient(
+                cursor.getString(cursor.getColumnIndexOrThrow(RECIPES_TITLE_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(RECIPE_INGREDIENTS_QUANTITY_COL)),
+            ))
+        }
+        return ingredients
+    }
+
+        companion object{
         private const val DATABASE_NAME = "cookbook"
         private const val DATABASE_VERSION = 3
 

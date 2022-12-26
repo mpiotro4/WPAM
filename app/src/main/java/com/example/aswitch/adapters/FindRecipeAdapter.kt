@@ -1,16 +1,13 @@
 package com.example.aswitch.adapters
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aswitch.Recipe
 import com.example.aswitch.R
 import com.example.aswitch.activities.FindRecipeActivity
-import com.example.aswitch.activities.ReadRecipeActivity
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.item_recipe.view.*
@@ -43,7 +40,7 @@ class FindRecipeAdapter(
                 addChip(keyword, cgKeyWords)
             }
             setOnClickListener {
-                findRecipeActivity.startReadActivity()
+                findRecipeActivity.startReadActivity(curRecipe)
             }
         }
     }
