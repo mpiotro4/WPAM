@@ -1,8 +1,8 @@
 package com.example.aswitch.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,11 +15,13 @@ import com.example.aswitch.adapters.IngredientAdapter
 import com.google.android.material.chip.Chip
 import com.release.gfg1.DBHelper
 import kotlinx.android.synthetic.main.activity_read_recipe.*
+import java.io.Serializable
 
 class ReadRecipeActivity : AppCompatActivity() {
     private lateinit var ingredientAdapter: IngredientAdapter
     private lateinit var keyWords: ArrayList<String>
     private lateinit var ingredients: MutableList<Ingredient>
+    private lateinit var recipe: Recipe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         keyWords = arrayListOf()
@@ -30,21 +32,23 @@ class ReadRecipeActivity : AppCompatActivity() {
 
         val dbHelper = DBHelper(this, null)
 
-        val recipe = intent.extras?.get("extra_recipe") as Recipe
-        recipe.keyWords.forEach { addChip(it) }
+        recipe = intent.extras?.get("extra_recipe") as Recipe
+        keyWords = recipe.keyWords as ArrayList<String>
 
-        populateIngredientsRv(dbHelper, recipe)
-
-        etRecipeName.setText(recipe.title)
-        etCost.setText(recipe.cost)
-        etTime.setText(recipe.time)
+        populateUIElements(dbHelper, recipe)
     }
 
-    private fun populateIngredientsRv(dbHelper: DBHelper, recipe: Recipe) {
+    private fun populateUIElements(dbHelper: DBHelper, recipe: Recipe) {
         ingredients = dbHelper.getRecipeIngrediens(recipe.id) as MutableList<Ingredient>
         ingredientAdapter = IngredientAdapter(ingredients)
         rvIngredients.adapter = ingredientAdapter
         rvIngredients.layoutManager = LinearLayoutManager(this)
+
+        etRecipeName.setText(recipe.title)
+        etCost.setText(recipe.cost)
+        etTime.setText(recipe.time)
+
+        recipe.keyWords.forEach { addChip(it) }
     }
 
     override fun onCreateOptionsMenu(menu :Menu): Boolean {
@@ -54,6 +58,13 @@ class ReadRecipeActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Intent(this, SecondActivity::class.java).also {
+            it.putExtra("extra_recipe", recipe as Serializable)
+            it.putExtra("extra_ingredients", ArrayList(ingredients))
+            it.putExtra("extra_key_words", keyWords)
+            it.putExtra("extra_if_update", true)
+            startActivity(it)
+        }
         return super.onOptionsItemSelected(item)
     }
 
