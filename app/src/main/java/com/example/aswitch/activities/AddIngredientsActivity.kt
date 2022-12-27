@@ -3,15 +3,18 @@ package com.example.aswitch.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aswitch.Ingredient
 import com.example.aswitch.R
+import com.example.aswitch.Recipe
 import com.example.aswitch.adapters.AddIngredientAdapter
 import com.example.aswitch.dialogs.QuantityDialog
 import com.release.gfg1.DBHelper
 import kotlinx.android.synthetic.main.activity_add_ingredients.*
+import java.io.Serializable
 
 
 class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialogListener {
@@ -19,15 +22,18 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
     private lateinit var adapter: AddIngredientAdapter
     private lateinit var extraIngredients: MutableList<Ingredient>
     private lateinit var extraKeyWords: MutableList<String>
+    private lateinit var extraRecipe: Recipe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_ingredients)
-//        Todo: make this button don't clean second activity
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         extraIngredients = intent.getParcelableArrayListExtra<Ingredient>("extra_ingredients") as ArrayList<Ingredient>
         extraKeyWords = intent.getStringArrayListExtra("extra_keyWords") as ArrayList<String>
+        if(intent.extras?.get("extra_recipe") != null) {
+            extraRecipe = intent.extras?.get("extra_recipe") as Recipe
+        }
 
         val ingredients = fetchIngredientsFromDB()
 
@@ -100,6 +106,9 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
         Intent(this, SecondActivity::class.java).also {
             it.putExtra("extra_ingredients", ArrayList(extraIngredients))
             it.putExtra("extra_key_words", ArrayList(extraKeyWords))
+            if (this::extraRecipe.isInitialized) {
+                it.putExtra("extra_recipe", extraRecipe as Serializable)
+            }
             startActivity(it)
         }
     }
@@ -107,5 +116,23 @@ class AddIngredientsActivity : AppCompatActivity(), QuantityDialog.ExampleDialog
     override fun addIngredientToDB(title: String) {
         val dbHelper = DBHelper(this, null)
         dbHelper.addIngredient(title)
+    }
+
+    private fun changeActivity() {
+        Intent(this, SecondActivity::class.java).also {
+            it.putExtra("extra_ingredients", ArrayList(extraIngredients))
+            it.putExtra("extra_key_words", ArrayList(extraKeyWords))
+            if (this::extraRecipe.isInitialized) {
+                it.putExtra("extra_recipe", extraRecipe as Serializable)
+            }
+            startActivity(it)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            changeActivity()
+        }
+        return true
     }
 }

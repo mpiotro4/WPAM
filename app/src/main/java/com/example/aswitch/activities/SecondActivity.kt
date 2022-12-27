@@ -3,6 +3,7 @@ package com.example.aswitch.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -19,6 +20,7 @@ import kotlinx.android.synthetic.main.activity_second.etCost
 import kotlinx.android.synthetic.main.activity_second.etRecipeName
 import kotlinx.android.synthetic.main.activity_second.etTime
 import kotlinx.android.synthetic.main.activity_second.rvIngredients
+import java.io.Serializable
 
 class SecondActivity : AppCompatActivity() {
     private lateinit var ingredientAdapter: IngredientAdapter
@@ -30,6 +32,9 @@ class SecondActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         keyWords = arrayListOf()
         ingredients = mutableListOf()
+        intent.extras?.get("extra_recipe")?.let {
+            recipe = it as Recipe
+        }
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second)
@@ -44,21 +49,21 @@ class SecondActivity : AppCompatActivity() {
         rvIngredients.layoutManager = LinearLayoutManager(this)
 
         btnBack.setOnClickListener {
-            finish()
+            Intent(this, MainActivity::class.java).also {
+                startActivity(it)
+            }
         }
 
         etAddIngredients.setOnClickListener {
             Intent(this, AddIngredientsActivity::class.java).also {
-                it.putExtra("extra_ingredients", ArrayList(ingredients))
-                it.putExtra("extra_keyWords", keyWords)
+                putExtras(it)
                 startActivity(it)
             }
         }
 
         etAddKeyWords.setOnClickListener {
             Intent(this, AddKeyWordsActivity::class.java).also {
-                it.putExtra("extra_ingredients", ArrayList(ingredients))
-                it.putExtra("extra_keyWords", keyWords)
+                putExtras(it)
                 startActivity(it)
             }
         }
@@ -86,6 +91,24 @@ class SecondActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun putExtras(intent: Intent) {
+        intent.putExtra("extra_ingredients", ArrayList(ingredients))
+        intent.putExtra("extra_keyWords", keyWords)
+        if (this::recipe.isInitialized) {
+            recipe.time = etTime.text.toString()
+            recipe.title = etRecipeName.text.toString()
+            recipe.cost = etCost.text.toString()
+        } else {
+            recipe = Recipe(
+                "",
+                etRecipeName.text.toString(),
+                etCost.text.toString(),
+                etTime.text.toString(),
+                keyWords)
+        }
+        intent.putExtra("extra_recipe", recipe as Serializable)
     }
 
     private fun addChip(txt: String) {

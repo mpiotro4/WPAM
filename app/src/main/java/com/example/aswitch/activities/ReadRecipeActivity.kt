@@ -48,7 +48,7 @@ class ReadRecipeActivity : AppCompatActivity() {
         etCost.setText(recipe.cost)
         etTime.setText(recipe.time)
 
-        recipe.keyWords.forEach { addChip(it) }
+        recipe.keyWords?.forEach { addChip(it) }
     }
 
     override fun onCreateOptionsMenu(menu :Menu): Boolean {
