@@ -45,7 +45,7 @@
             app:layout_constraintEnd_toStartOf="@+id/btnAddPhoto"
             app:layout_constraintHorizontal_bias="0.868"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etRecipeName"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
             app:srcCompat="@android:drawable/ic_menu_camera" />
 
         <ImageButton
@@ -55,7 +55,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="140dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etRecipeName"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
             app:srcCompat="@android:drawable/ic_menu_gallery" />
 
         <EditText
@@ -136,8 +136,17 @@
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvIngredients">
-
-
         </com.google.android.material.chip.ChipGroup>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:adjustViewBounds="true"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etRecipeName" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

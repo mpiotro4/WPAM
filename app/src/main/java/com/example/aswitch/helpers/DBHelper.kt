@@ -6,7 +6,6 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.aswitch.Ingredient
-import com.example.aswitch.Recipe
 
 class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
@@ -29,7 +28,8 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 $RECIPES_ID_COL INTEGER PRIMARY KEY,
                 $RECIPES_TITLE_COL TEXT NOT NULL,
                 $RECIPES_TIME_COL INTEGER,
-                $RECIPES_COST_COL REAL
+                $RECIPES_COST_COL REAL,
+                $RECIPES_IMG_COL BLOB
                 )
             """)
         db.execSQL(""" 
@@ -74,6 +74,20 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         ingredients.forEach {  getIngredientId(it.title)?.let { it1 -> addRecipeIngredient(recipeId.toString(), it1, it.quantity) } }
         db.close()
     }
+
+    fun addRecipeWithImg(title: String?, time: String, cost: String, keyWords: ArrayList<String>, ingredients: MutableList<Ingredient>, img: ByteArray){
+        val values = ContentValues()
+        values.put(RECIPES_TITLE_COL, title)
+        values.put(RECIPES_COST_COL, cost)
+        values.put(RECIPES_TIME_COL, time)
+        values.put(RECIPES_IMG_COL, img)
+        val db = this.writableDatabase
+        val recipeId = db.insert(RECIPES_TABLE_NAME, null, values)
+        keyWords.forEach { getKeywordId(it)?.let { it1 -> addRecipeKeyword(recipeId.toString(), it1) } }
+        ingredients.forEach {  getIngredientId(it.title)?.let { it1 -> addRecipeIngredient(recipeId.toString(), it1, it.quantity) } }
+        db.close()
+    }
+
 
     fun addIngredient(title : String){
         val values = ContentValues()
@@ -162,6 +176,23 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return ingredients
     }
 
+    fun getRecipeImageById(id: String): ByteArray? {
+        val db = this.readableDatabase
+        val sql = """SELECT image FROM recipes WHERE recipe_id = $id"""
+        val cursor = db.rawQuery(sql, arrayOf())
+        cursor.moveToFirst()
+        return cursor.getBlob(0)
+    }
+
+    fun getRecipeImage(): ByteArray? {
+        val db = this.readableDatabase
+        val sql = "SELECT  image FROM recipes"
+        val cursor = db.rawQuery(sql, arrayOf())
+        cursor.moveToFirst()
+        cursor.moveToNext()
+        return cursor.getBlob(0)
+    }
+
         companion object{
         private const val DATABASE_NAME = "cookbook"
         private const val DATABASE_VERSION = 3
@@ -179,6 +210,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         const val RECIPES_TITLE_COL = "title"
         const val RECIPES_TIME_COL = "time"
         const val RECIPES_COST_COL = "cost"
+        const val RECIPES_IMG_COL = "image"
 
         const val RECIPE_INGREDIENTS_TABLE_NAME = "recipe_ingredients"
         const val RECIPE_INGREDIENTS_QUANTITY_COL = "quantity"

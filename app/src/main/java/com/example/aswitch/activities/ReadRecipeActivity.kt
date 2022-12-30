@@ -1,6 +1,7 @@
 package com.example.aswitch.activities
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -15,6 +16,11 @@ import com.example.aswitch.adapters.IngredientAdapter
 import com.google.android.material.chip.Chip
 import com.release.gfg1.DBHelper
 import kotlinx.android.synthetic.main.activity_read_recipe.*
+import kotlinx.android.synthetic.main.activity_read_recipe.cgKeyWords
+import kotlinx.android.synthetic.main.activity_read_recipe.etCost
+import kotlinx.android.synthetic.main.activity_read_recipe.etRecipeName
+import kotlinx.android.synthetic.main.activity_read_recipe.etTime
+import kotlinx.android.synthetic.main.activity_read_recipe.rvIngredients
 import java.io.Serializable
 
 class ReadRecipeActivity : AppCompatActivity() {
@@ -32,8 +38,12 @@ class ReadRecipeActivity : AppCompatActivity() {
 
         val dbHelper = DBHelper(this, null)
 
+
         recipe = intent.extras?.get("extra_recipe") as Recipe
         keyWords = recipe.keyWords as ArrayList<String>
+        val byteArray = dbHelper.getRecipeImageById(recipe.id)
+        val bmp = byteArray?.let { BitmapFactory.decodeByteArray(byteArray, 0, it.lastIndex) }
+        imageView.setImageBitmap(bmp)
 
         populateUIElements(dbHelper, recipe)
     }

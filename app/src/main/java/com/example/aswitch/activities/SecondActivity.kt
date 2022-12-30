@@ -1,17 +1,13 @@
 package com.example.aswitch.activities
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aswitch.Ingredient
@@ -21,12 +17,11 @@ import com.example.aswitch.adapters.IngredientAdapter
 import com.google.android.material.chip.Chip
 import com.release.gfg1.DBHelper
 import kotlinx.android.synthetic.main.activity_second.*
-import kotlinx.android.synthetic.main.activity_second.cgKeyWords
-import kotlinx.android.synthetic.main.activity_second.etCost
-import kotlinx.android.synthetic.main.activity_second.etRecipeName
-import kotlinx.android.synthetic.main.activity_second.etTime
-import kotlinx.android.synthetic.main.activity_second.rvIngredients
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.io.Serializable
+
 
 class SecondActivity : AppCompatActivity() {
     private lateinit var ingredientAdapter: IngredientAdapter
@@ -34,6 +29,7 @@ class SecondActivity : AppCompatActivity() {
     private lateinit var ingredients: MutableList<Ingredient>
     private lateinit var recipe: Recipe
     private var ifUpdate: Boolean = false
+    private lateinit var img: ByteArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         keyWords = arrayListOf()
@@ -55,21 +51,20 @@ class SecondActivity : AppCompatActivity() {
         rvIngredients.layoutManager = LinearLayoutManager(this)
 
         btnAddPhoto.setOnClickListener{
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_DENIED){
-                    val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    requestPermissions(permissions, PERMISSION_CODE)
-                } else{
-                    chooseImageGallery();
-                }
-            }else{
-                chooseImageGallery();
-            }
+            val dupa = dbHelper.getRecipeImage()
+            Log.d("XDD", dupa.contentToString())
+//                        imageView.setImageURI(data?.data)
+//            val iStream: InputStream? = data?.data?.let { contentResolver.openInputStream(it) }
+//            val inputData: ByteArray? = iStream?.let { getBytes(it) }
+//            if (inputData != null) {
+//                img = inputData
+//            }
+            val bmp = dupa?.let { it1 -> BitmapFactory.decodeByteArray(dupa, 0, it1.lastIndex) }
+            imageView.setImageBitmap(bmp)
         }
 
         btnMakePhoto.setOnClickListener{
-            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            startActivity(gallery)
+            openGalleryForImage()
         }
 
         btnBack.setOnClickListener {
@@ -102,12 +97,13 @@ class SecondActivity : AppCompatActivity() {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                 } else {
-                    dbHelper.addRecipe(
+                    dbHelper.addRecipeWithImg(
                         etRecipeName.text.toString(),
                         etCost.text.toString(),
                         etTime.text.toString(),
                         keyWords,
-                        ingredients
+                        ingredients,
+                        img
                     )
                     Toast.makeText(applicationContext,"Przepis dodany pomyślnie",Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, MainActivity::class.java)
@@ -172,37 +168,38 @@ class SecondActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-        private val IMAGE_CHOOSE = 1000;
-        private val PERMISSION_CODE = 1001;
-    }
-
-    private fun chooseImageGallery() {
+    private fun openGalleryForImage() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        startActivityForResult(intent, IMAGE_CHOOSE)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when(requestCode){
-            PERMISSION_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    chooseImageGallery()
-                }else{
-                    Toast.makeText(this,"Permission denied", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
+        startActivityForResult(intent, 100)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        imageView.setImageURI(data?.data)
+        if (resultCode == Activity.RESULT_OK && requestCode == 100){
+//            imageView.setImageURI(data?.data)
+            val iStream: InputStream? = data?.data?.let { contentResolver.openInputStream(it) }
+            val inputData: ByteArray? = iStream?.let { getBytes(it) }
+            if (inputData != null) {
+                img = inputData
+            }
+
+            val bmp = img.let { BitmapFactory.decodeByteArray(img, 0, it.lastIndex) }
+            imageView.setImageBitmap(bmp)
+        }
+
+    }
+
+    @Throws(IOException::class)
+    fun getBytes(inputStream: InputStream): ByteArray? {
+        val byteBuffer = ByteArrayOutputStream()
+        val bufferSize = 1024
+        val buffer = ByteArray(bufferSize)
+        var len = 0
+        while (inputStream.read(buffer).also { len = it } != -1) {
+            byteBuffer.write(buffer, 0, len)
+        }
+        return byteBuffer.toByteArray()
     }
 
     private fun removeChip(txt: String) {
