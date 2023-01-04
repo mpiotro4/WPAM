@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aswitch.Ingredient
@@ -28,6 +29,7 @@ class ReadRecipeActivity : AppCompatActivity() {
     private lateinit var keyWords: ArrayList<String>
     private lateinit var ingredients: MutableList<Ingredient>
     private lateinit var recipe: Recipe
+    private val dbHelper = DBHelper(this, null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         keyWords = arrayListOf()
@@ -35,9 +37,6 @@ class ReadRecipeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_read_recipe)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        val dbHelper = DBHelper(this, null)
-
 
         recipe = intent.extras?.get("extra_recipe") as Recipe
         keyWords = recipe.keyWords as ArrayList<String>
@@ -68,13 +67,22 @@ class ReadRecipeActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Intent(this, SecondActivity::class.java).also {
-            it.putExtra("extra_recipe", recipe as Serializable)
-            it.putExtra("extra_ingredients", ArrayList(ingredients))
-            it.putExtra("extra_key_words", keyWords)
-            it.putExtra("extra_if_update", true)
-            startActivity(it)
+        if(item.itemId == R.id.updateRecipe) {
+            Intent(this, SecondActivity::class.java).also {
+                it.putExtra("extra_recipe", recipe as Serializable)
+                it.putExtra("extra_ingredients", ArrayList(ingredients))
+                it.putExtra("extra_key_words", keyWords)
+                it.putExtra("extra_if_update", true)
+                startActivity(it)
+            }
         }
+        if(item.itemId == R.id.deleteRecipe){
+            dbHelper.deleteRecipe(recipe.id)
+            Toast.makeText(applicationContext,"Przepis usunięty pomyślnie", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
         return super.onOptionsItemSelected(item)
     }
 

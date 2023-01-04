@@ -6,4 +6,10 @@
         android:icon="@drawable/update_recipe"
         android:title="updateRecipe"
         app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/deleteRecipe"
+        android:icon="@drawable/delete_recipe"
+        android:title="updateRecipe"
+        app:showAsAction="ifRoom" />
+
 </menu>

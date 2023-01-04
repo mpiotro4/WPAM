@@ -37,8 +37,8 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 $RECIPES_ID_COL INTEGER,
                 $INGREDIENTS_ID_COL INTEGER,
                 $RECIPE_INGREDIENTS_QUANTITY_COL TEXT,
-                FOREIGN KEY($RECIPES_ID_COL) REFERENCES $RECIPES_TABLE_NAME($RECIPES_ID_COL),
-                FOREIGN KEY($INGREDIENTS_ID_COL) REFERENCES $INGREDIENTS_TABLE_NAME($INGREDIENTS_ID_COL),
+                FOREIGN KEY($RECIPES_ID_COL) REFERENCES $RECIPES_TABLE_NAME($RECIPES_ID_COL) ON DELETE CASCADE,
+                FOREIGN KEY($INGREDIENTS_ID_COL) REFERENCES $INGREDIENTS_TABLE_NAME($INGREDIENTS_ID_COL) ON DELETE CASCADE,
                 PRIMARY KEY ($RECIPES_ID_COL, $INGREDIENTS_ID_COL)    
                 )
             """)
@@ -46,8 +46,8 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             CREATE TABLE $RECIPE_KEYWORDS_TABLE_NAME (
                 $RECIPES_ID_COL INTEGER,
                 $KEYWORDS_ID_COL INTEGER,
-                FOREIGN KEY($RECIPES_ID_COL) REFERENCES $RECIPES_TABLE_NAME($RECIPES_ID_COL),
-                FOREIGN KEY($KEYWORDS_ID_COL) REFERENCES $KEYWORDS_TABLE_NAME($KEYWORDS_ID_COL),
+                FOREIGN KEY($RECIPES_ID_COL) REFERENCES $RECIPES_TABLE_NAME($RECIPES_ID_COL) ON DELETE CASCADE,
+                FOREIGN KEY($KEYWORDS_ID_COL) REFERENCES $KEYWORDS_TABLE_NAME($KEYWORDS_ID_COL) ON DELETE CASCADE,
                 PRIMARY KEY ($RECIPES_ID_COL, $KEYWORDS_ID_COL)    
                 )
             """)
@@ -191,6 +191,12 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         cursor.moveToFirst()
         cursor.moveToNext()
         return cursor.getBlob(0)
+    }
+
+    fun deleteRecipe(recpeId: String) {
+        val db = this.writableDatabase
+        db.delete(RECIPES_TABLE_NAME, """$RECIPES_ID_COL=?""", arrayOf(recpeId))
+        db.close()
     }
 
         companion object{
