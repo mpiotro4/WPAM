@@ -1,5 +1,6 @@
 package com.example.aswitch.adapters
 
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import com.example.aswitch.R
 import com.example.aswitch.activities.FindRecipeActivity
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.release.gfg1.DBHelper
 import kotlinx.android.synthetic.main.item_recipe.view.*
 
 class FindRecipeAdapter(
@@ -34,6 +36,12 @@ class FindRecipeAdapter(
             tvTitle.text = curRecipe.title
             tvCost.text = "Koszt: " + curRecipe.cost + " zł"
             tvTime.text = "Czas: " + curRecipe.time + " min"
+
+            val dbHelper = DBHelper(findRecipeActivity, null)
+            val image = dbHelper.getRecipeImageById(curRecipe.id)
+            val bmp = image?.let { it1 -> BitmapFactory.decodeByteArray(image, 0, it1.lastIndex) }
+            imageView.setImageBitmap(bmp)
+
 
             cgKeyWords.removeAllViews()
             for(keyword in curRecipe.keyWords) {

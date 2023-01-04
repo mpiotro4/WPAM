@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvCost" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/imageView"
         android:layout_width="233dp"
         android:layout_height="158dp"
         android:adjustViewBounds="true"
