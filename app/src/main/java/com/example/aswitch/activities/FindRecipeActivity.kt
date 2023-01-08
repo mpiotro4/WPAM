@@ -29,20 +29,9 @@ class FindRecipeActivity : AppCompatActivity() {
         val db = DBHelper(this, null)
         val cursor = db.getRecipes()
         cursor!!.moveToFirst()
-        var recipeId = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_ID_COL))
-        var keywords = db.getRecipeKeywords(recipeId)
-        recipes.add(
-            Recipe(
-                cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_ID_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TITLE_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_COST_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TIME_COL)),
-                keywords
-            )
-        )
-        while (cursor.moveToNext()) {
-            recipeId = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_ID_COL))
-            keywords = db.getRecipeKeywords(recipeId)
+        try {
+            var recipeId = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_ID_COL))
+            var keywords = db.getRecipeKeywords(recipeId)
             recipes.add(
                 Recipe(
                     cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_ID_COL)),
@@ -50,11 +39,26 @@ class FindRecipeActivity : AppCompatActivity() {
                     cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_COST_COL)),
                     cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TIME_COL)),
                     keywords
-                    )
+                )
             )
+            while (cursor.moveToNext()) {
+                recipeId = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_ID_COL))
+                keywords = db.getRecipeKeywords(recipeId)
+                recipes.add(
+                    Recipe(
+                        cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_ID_COL)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TITLE_COL)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_COST_COL)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.RECIPES_TIME_COL)),
+                        keywords
+                    )
+                )
+            }
+            db.close()
+            return recipes
+        } catch (e: Exception) {
+            return recipes
         }
-        db.close()
-        return recipes
     }
 
     fun startReadActivity(curRecipe: Recipe) {
