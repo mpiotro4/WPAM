@@ -73,6 +73,7 @@ class ReadRecipeActivity : AppCompatActivity() {
                 it.putExtra("extra_ingredients", ArrayList(ingredients))
                 it.putExtra("extra_key_words", keyWords)
                 it.putExtra("extra_if_update", true)
+                it.putExtra("extra_img", dbHelper.getRecipeImageById(recipe.id))
                 startActivity(it)
             }
         }

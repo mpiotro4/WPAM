@@ -2,6 +2,7 @@ package com.example.aswitch.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -78,6 +79,7 @@ class AddKeyWordsActivity : AppCompatActivity() {
                 it.putExtra("extra_recipe", extraRecipe as Serializable)
             }
             it.putExtra("extra_if_update", ifUpadte)
+            it.putExtra("extra_img", intent.getByteArrayExtra("extra_img"))
             startActivity(it)
         }
     }

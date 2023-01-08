@@ -128,6 +128,9 @@ class SecondActivity : AppCompatActivity() {
                 etTime.text.toString(),
                 keyWords)
         }
+        if(this::img.isInitialized) {
+            intent.putExtra("extra_img", img)
+        }
         intent.putExtra("extra_recipe", recipe as Serializable)
         intent.putExtra("extra_if_update", ifUpdate)
     }
@@ -166,6 +169,11 @@ class SecondActivity : AppCompatActivity() {
             etRecipeName.setText(recipe.title)
             etCost.setText(recipe.cost)
             etTime.setText(recipe.time)
+        }
+        intent.getByteArrayExtra("extra_img")?.let {
+            img = it
+            val bmp = img.let { it1 -> BitmapFactory.decodeByteArray(img, 0, it1.lastIndex) }
+            imageView.setImageBitmap(bmp)
         }
     }
 
