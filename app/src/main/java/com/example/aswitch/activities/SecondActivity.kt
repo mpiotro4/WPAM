@@ -2,8 +2,10 @@ package com.example.aswitch.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -50,20 +52,12 @@ class SecondActivity : AppCompatActivity() {
         rvIngredients.adapter = ingredientAdapter
         rvIngredients.layoutManager = LinearLayoutManager(this)
 
-        btnAddPhoto.setOnClickListener{
-            val dupa = dbHelper.getRecipeImage()
-            Log.d("XDD", dupa.contentToString())
-//                        imageView.setImageURI(data?.data)
-//            val iStream: InputStream? = data?.data?.let { contentResolver.openInputStream(it) }
-//            val inputData: ByteArray? = iStream?.let { getBytes(it) }
-//            if (inputData != null) {
-//                img = inputData
-//            }
-            val bmp = dupa?.let { it1 -> BitmapFactory.decodeByteArray(dupa, 0, it1.lastIndex) }
-            imageView.setImageBitmap(bmp)
+        btnMakePhoto.setOnClickListener{
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(cameraIntent, 0)
         }
 
-        btnMakePhoto.setOnClickListener{
+        btnAddPhoto.setOnClickListener{
             openGalleryForImage()
         }
 
@@ -196,7 +190,13 @@ class SecondActivity : AppCompatActivity() {
             val bmp = img.let { BitmapFactory.decodeByteArray(img, 0, it.lastIndex) }
             imageView.setImageBitmap(bmp)
         }
-
+        if (resultCode == Activity.RESULT_OK && requestCode == 0 && data != null){
+            val bitmap = data.extras?.get("data") as Bitmap
+            imageView.setImageBitmap(bitmap)
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+            img = stream.toByteArray()
+        }
     }
 
     @Throws(IOException::class)
