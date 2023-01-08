@@ -129,6 +129,7 @@ class SecondActivity : AppCompatActivity() {
                 keyWords)
         }
         intent.putExtra("extra_recipe", recipe as Serializable)
+        intent.putExtra("extra_if_update", ifUpdate)
     }
 
     private fun addChip(txt: String) {
