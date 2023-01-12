@@ -7,5 +7,6 @@ data class Recipe(
     var title: String?,
     var cost: String?,
     var time: String?,
+    var description: String?,
     var keyWords: List<String>
         ) : Serializable

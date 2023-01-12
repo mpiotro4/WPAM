@@ -29,6 +29,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 $RECIPES_TITLE_COL TEXT NOT NULL,
                 $RECIPES_TIME_COL INTEGER,
                 $RECIPES_COST_COL REAL,
+                $RECIPES_DESCRIPTION_COL TEXT,
                 $RECIPES_IMG_COL BLOB
                 )
             """)
@@ -75,12 +76,13 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.close()
     }
 
-    fun addRecipeWithImg(title: String?, time: String, cost: String, keyWords: ArrayList<String>, ingredients: MutableList<Ingredient>, img: ByteArray){
+    fun addRecipeWithImg(title: String?, time: String, cost: String, description: String, keyWords: ArrayList<String>, ingredients: MutableList<Ingredient>, img: ByteArray){
         val values = ContentValues()
         values.put(RECIPES_TITLE_COL, title)
         values.put(RECIPES_COST_COL, cost)
         values.put(RECIPES_TIME_COL, time)
         values.put(RECIPES_IMG_COL, img)
+        values.put(RECIPES_DESCRIPTION_COL, description)
         val db = this.writableDatabase
         val recipeId = db.insert(RECIPES_TABLE_NAME, null, values)
         keyWords.forEach { getKeywordId(it)?.let { it1 -> addRecipeKeyword(recipeId.toString(), it1) } }
@@ -216,6 +218,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         const val RECIPES_TITLE_COL = "title"
         const val RECIPES_TIME_COL = "time"
         const val RECIPES_COST_COL = "cost"
+        const val RECIPES_DESCRIPTION_COL = "description"
         const val RECIPES_IMG_COL = "image"
 
         const val RECIPE_INGREDIENTS_TABLE_NAME = "recipe_ingredients"

@@ -56,6 +56,7 @@ class ReadRecipeActivity : AppCompatActivity() {
         etRecipeName.setText(recipe.title)
         etCost.setText(recipe.cost)
         etTime.setText(recipe.time)
+        etDescription.setText(recipe.description)
 
         recipe.keyWords?.forEach { addChip(it) }
     }

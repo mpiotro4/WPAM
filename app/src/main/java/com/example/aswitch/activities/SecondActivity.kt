@@ -87,8 +87,9 @@ class SecondActivity : AppCompatActivity() {
             } else {
                 dbHelper.addRecipeWithImg(
                     etRecipeName.text.toString(),
-                    etCost.text.toString(),
                     etTime.text.toString(),
+                    etCost.text.toString(),
+                    etDescription.text.toString(),
                     keyWords,
                     ingredients,
                     img
@@ -120,6 +121,7 @@ class SecondActivity : AppCompatActivity() {
                 etRecipeName.text.toString(),
                 etCost.text.toString(),
                 etTime.text.toString(),
+                etDescription.text.toString(),
                 keyWords)
         }
         if(this::img.isInitialized) {
@@ -163,6 +165,7 @@ class SecondActivity : AppCompatActivity() {
             etRecipeName.setText(recipe.title)
             etCost.setText(recipe.cost)
             etTime.setText(recipe.time)
+            etDescription.setText(recipe.description)
         }
         intent.getByteArrayExtra("extra_img")?.let {
             img = it
