@@ -85,20 +85,20 @@ class SecondActivity : AppCompatActivity() {
             if(etRecipeName.text.toString().isEmpty()){
                 Toast.makeText(applicationContext,"Nazwa przepisu nie może być pusta",Toast.LENGTH_SHORT).show()
             } else {
+                dbHelper.addRecipeWithImg(
+                    etRecipeName.text.toString(),
+                    etCost.text.toString(),
+                    etTime.text.toString(),
+                    keyWords,
+                    ingredients,
+                    img
+                )
                 if(ifUpdate) {
-//                    Todo update recipe logic
+                    dbHelper.deleteRecipe(recipe.id)
                     Toast.makeText(applicationContext,"Przepis zauktualizowany pomyślnie",Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                 } else {
-                    dbHelper.addRecipeWithImg(
-                        etRecipeName.text.toString(),
-                        etCost.text.toString(),
-                        etTime.text.toString(),
-                        keyWords,
-                        ingredients,
-                        img
-                    )
                     Toast.makeText(applicationContext,"Przepis dodany pomyślnie",Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
