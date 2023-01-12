@@ -6,18 +6,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aswitch.Ingredient
 import com.example.aswitch.R
-import kotlinx.android.synthetic.main.item_ingredient.view.*
+import kotlinx.android.synthetic.main.item_ingredient_read.view.*
 
-class IngredientAdapter (
+class ReadIngredientAdapter (
     private val ingredients: MutableList<Ingredient>
-) : RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder>() {
+) : RecyclerView.Adapter<ReadIngredientAdapter.IngredientViewHolder>() {
 
     class IngredientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientViewHolder {
         return IngredientViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.item_ingredient,
+                R.layout.item_ingredient_read,
                 parent,
                 false
             )
@@ -29,10 +29,6 @@ class IngredientAdapter (
         holder.itemView.apply {
             tvIngredient.text = curTodo.title
             tvQuantity.text = curTodo.quantity
-            deleteIngredient.setOnClickListener {
-                ingredients.removeAt(position)
-                notifyItemRemoved(position)
-            }
         }
     }
 

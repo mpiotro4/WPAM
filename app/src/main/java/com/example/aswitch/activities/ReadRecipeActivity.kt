@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aswitch.Ingredient
 import com.example.aswitch.R
 import com.example.aswitch.Recipe
-import com.example.aswitch.adapters.IngredientAdapter
+import com.example.aswitch.adapters.ReadIngredientAdapter
 import com.google.android.material.chip.Chip
 import com.release.gfg1.DBHelper
 import kotlinx.android.synthetic.main.activity_read_recipe.*
@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_read_recipe.rvIngredients
 import java.io.Serializable
 
 class ReadRecipeActivity : AppCompatActivity() {
-    private lateinit var ingredientAdapter: IngredientAdapter
+    private lateinit var ingredientAdapter: ReadIngredientAdapter
     private lateinit var keyWords: ArrayList<String>
     private lateinit var ingredients: MutableList<Ingredient>
     private lateinit var recipe: Recipe
@@ -49,7 +49,7 @@ class ReadRecipeActivity : AppCompatActivity() {
 
     private fun populateUIElements(dbHelper: DBHelper, recipe: Recipe) {
         ingredients = dbHelper.getRecipeIngrediens(recipe.id) as MutableList<Ingredient>
-        ingredientAdapter = IngredientAdapter(ingredients)
+        ingredientAdapter = ReadIngredientAdapter(ingredients)
         rvIngredients.adapter = ingredientAdapter
         rvIngredients.layoutManager = LinearLayoutManager(this)
 
